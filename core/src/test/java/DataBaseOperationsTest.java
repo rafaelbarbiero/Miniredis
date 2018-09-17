@@ -2,6 +2,8 @@ import br.com.aquiris.core.Database;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.IntStream;
 
 public class DataBaseOperationsTest {

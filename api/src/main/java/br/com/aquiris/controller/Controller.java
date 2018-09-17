@@ -1,6 +1,7 @@
 package br.com.aquiris.controller;
 
 import br.com.aquiris.core.Database;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +18,7 @@ public class Controller {
     @GetMapping(value = {"/get/{key}"}, name = "GET")
     public ResponseEntity<String> get(@PathVariable("key") final String key) {
         final String value = Database.get(key);
-        return ResponseEntity.ok((value == null) ? "nil" : value);
+        return ResponseEntity.ok((value == null) ? "null" : value);
     }
 
     // Em virtude do tempo hábil para realização do desafio, optei por criar apenas o endpoint para apenas uma inserção
@@ -37,6 +38,13 @@ public class Controller {
     public ResponseEntity<String> set(@PathVariable("key") String key, @PathVariable("value") String value) {
         Database.set(key, value);
         return ResponseEntity.ok("Ok");
+    }
+
+    @PutMapping(value = {"/setEX/{key}/{value}/{expiration}"}, name = "SETEX")
+    public ResponseEntity<String> setEX(@PathVariable("key") String key,
+                                            @PathVariable("value") String value,
+                                            @PathVariable("expiration") String expiration) {
+        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body("Not Implemented");
     }
 
     @DeleteMapping(value = {"/del/{key}/"}, name = "DEL")
@@ -64,14 +72,14 @@ public class Controller {
 
     @GetMapping(value = {"/zrank/{key}/{value}"}, name = "ZRANK")
     public ResponseEntity<String> zrank(@PathVariable("key") String key, @PathVariable("value") final String value) {
-        final String result = Database.getZRANK(key, value);
-        return ResponseEntity.ok(result);
+        final Integer result = Database.getZRANK(key, value);
+        return ResponseEntity.ok((result == -1) ? "null" : String.valueOf(result));
     }
 
     @GetMapping(value = {"/zrange/{key}/{start}/{stop}"}, name = "ZRANGE")
     public ResponseEntity<List<String>> zrange(@PathVariable("key") String key,
-                                              @PathVariable("start") final int start,
-                                              @PathVariable("stop") final int stop) {
+                                               @PathVariable("start") final int start,
+                                               @PathVariable("stop") final int stop) {
         final List<String> result = Database.getZRANGE(key, start, stop);
         return ResponseEntity.ok(result);
     }
