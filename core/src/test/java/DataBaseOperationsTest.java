@@ -1,5 +1,4 @@
 import br.com.aquiris.core.Database;
-import br.com.aquiris.core.domain.DataModel;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
@@ -27,7 +26,7 @@ public class DataBaseOperationsTest {
     @Test
     public void delTest(){
         Database.set("mykey", "um");
-        Assertions.assertThat(Database.del("mykey")).isEqualByComparingTo(new DataModel("mykey", "um"));
+        Assertions.assertThat(Database.del("mykey")).isEqualTo("um");
     }
 
     @Test
@@ -35,7 +34,7 @@ public class DataBaseOperationsTest {
         IntStream.rangeClosed(0, 9).boxed()
                 .map(String::valueOf)
                 .forEach(value -> Database.set(value, value));
-        Assertions.assertThat(Database.getDBSize()).isEqualTo(10);
+        Assertions.assertThat(Database.getDBSIZE()).isEqualTo(10);
     }
 
     @Test

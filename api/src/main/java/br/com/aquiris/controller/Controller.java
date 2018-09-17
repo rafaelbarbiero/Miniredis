@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -15,9 +16,11 @@ public class Controller {
 
     @GetMapping(value = {"/get/{key}"}, name = "GET")
     public ResponseEntity<String> get(@PathVariable("key") final String key) {
-        return ResponseEntity.ok(Database.get(key));
+        final String value = Database.get(key);
+        return ResponseEntity.ok((value == null) ? "nil" : value);
     }
 
+    // Em virtude do tempo hábil para realização do desafio, optei por criar apenas o endpoint para apenas uma inserção
     @PutMapping(value = {"/zadd/{key}/{score}/{value}"}, name = "ZADD")
     public ResponseEntity<String> zadd(@PathVariable("key") final String key, @PathVariable("score") final int score,
                                        @PathVariable("value") final String value) {
@@ -27,7 +30,7 @@ public class Controller {
 
     @GetMapping(value = {"/dbsize"}, name = "DBSIZE")
     public ResponseEntity<Integer> dbsize() {
-        return ResponseEntity.ok(Database.getDBSize());
+        return ResponseEntity.ok(Database.getDBSIZE());
     }
 
     @PutMapping(value = {"/set/{key}/{value}"}, name = "SET")
@@ -53,10 +56,24 @@ public class Controller {
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping(value = {"/zcard/{key}/"}, name = "INCR")
-    public ResponseEntity<String> zcard(@PathVariable("key") String key) {
-        //TODO
-        return ResponseEntity.ok(null);
+    @GetMapping(value = {"/zcard/{key}/"}, name = "ZCARD")
+    public ResponseEntity<Integer> zcard(@PathVariable("key") String key) {
+        final Integer result = Database.getZCARD(key);
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping(value = {"/zrank/{key}/{value}"}, name = "ZRANK")
+    public ResponseEntity<String> zrank(@PathVariable("key") String key, @PathVariable("value") final String value) {
+        final String result = Database.getZRANK(key, value);
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping(value = {"/zrange/{key}/{start}/{stop}"}, name = "ZRANGE")
+    public ResponseEntity<List<String>> zrange(@PathVariable("key") String key,
+                                              @PathVariable("start") final int start,
+                                              @PathVariable("stop") final int stop) {
+        final List<String> result = Database.getZRANGE(key, start, stop);
+        return ResponseEntity.ok(result);
     }
 
 }
