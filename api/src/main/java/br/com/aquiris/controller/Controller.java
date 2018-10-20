@@ -1,24 +1,22 @@
 package br.com.aquiris.controller;
 
 import br.com.aquiris.core.Database;
+import br.com.aquiris.handler.ResultsHandler;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/redis")
+@RequestMapping("/")
 @CrossOrigin(origins = {"*"})
 public class Controller {
 
     @GetMapping(value = {"/get/{key}"}, name = "GET")
     public ResponseEntity<String> get(@PathVariable("key") final String key) {
         final String value = Database.get(key);
-        return ResponseEntity.ok((value == null) ? "null" : value);
+        return ResponseEntity.ok(ResultsHandler.handlerResult(value));
     }
 
     // Em virtude do tempo hábil para realização do desafio, optei por criar apenas o endpoint para apenas uma inserção
@@ -49,12 +47,7 @@ public class Controller {
 
     @DeleteMapping(value = {"/del/{key}/"}, name = "DEL")
     public ResponseEntity<Integer> del(@PathVariable("key") String... key) {
-        final Integer count = Arrays.asList(key)
-                .stream()
-                .map(Database::del)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList())
-                .size();
+        final Integer count = Database.delCount(key);
         return ResponseEntity.ok(count);
     }
 
@@ -73,7 +66,7 @@ public class Controller {
     @GetMapping(value = {"/zrank/{key}/{value}"}, name = "ZRANK")
     public ResponseEntity<String> zrank(@PathVariable("key") String key, @PathVariable("value") final String value) {
         final Integer result = Database.getZRANK(key, value);
-        return ResponseEntity.ok((result == -1) ? "null" : String.valueOf(result));
+        return ResponseEntity.ok(ResultsHandler.handlerResult(result));
     }
 
     @GetMapping(value = {"/zrange/{key}/{start}/{stop}"}, name = "ZRANGE")

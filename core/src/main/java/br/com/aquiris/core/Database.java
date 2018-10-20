@@ -6,7 +6,7 @@ import java.util.stream.Stream;
 
 public class Database {
 
-    private static final Map<String, String> data = new LinkedHashMap<>();
+    private static final Map<String, String> data = new HashMap<>();
     private static final Map<String, HashMap<String, Integer>> dataZ = new HashMap<>();
 
     public static void set(final String key, final String value) {
@@ -31,8 +31,17 @@ public class Database {
         return Database.data.get(key);
     }
 
-    public static String del(final String key) {
+    private static String del(final String key) {
         return Database.data.remove(key);
+    }
+
+    public static Integer delCount(final String... key){
+        return Arrays.asList(key)
+                .stream()
+                .map(Database::del)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList())
+                .size();
     }
 
     public static Integer getDBSIZE() {
